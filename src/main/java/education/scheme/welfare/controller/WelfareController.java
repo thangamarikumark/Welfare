@@ -1,7 +1,10 @@
 package education.scheme.welfare.controller;
 
+import education.scheme.welfare.models.ExceptionEntity;
 import education.scheme.welfare.service.WelfareService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,13 +23,11 @@ public class WelfareController {
     @PostMapping("/welfare")
     public ResponseEntity<Object> GetScheme(@RequestBody Map<String, String> request) {
         String userId = request.get("user_id");
-        System.out.println("userId = " + userId);
-        System.out.println("request = " + request);
-        if (userId == null) {
-            return ResponseEntity.badRequest().build();
+        if (userId == null || userId.isEmpty()) {
+            throw new RuntimeException("user_id is required");
+        } else {
+            return welfareService.getScheme(userId);
         }
-        return welfareService.getScheme(userId);
-
     }
 
 }
